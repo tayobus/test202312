@@ -7,8 +7,9 @@ import java.util.Scanner;
 
 public class ParkingManager {
     private final MonthlyIncome monthlyIncome = new MonthlyIncome();
+    private final ParkingLot parkingLot;
     Scanner in = new Scanner(System.in);
-    private ParkingLot parkingLot;
+
     public ParkingManager(int NofSpots, int monthlyFee, int feePer10) {
         this.parkingLot = new ParkingLot(NofSpots);
         Calculator calc = new Calculator(monthlyFee, feePer10, parkingLot);
@@ -57,6 +58,7 @@ public class ParkingManager {
             }
         }
     }
+
     public LocalDate ldRead() {
         int year = in.nextInt();
         int month = in.nextInt();
@@ -84,6 +86,14 @@ public class ParkingManager {
         }
     }
 
+    public void assign(String id, String contact, LocalDate assignT, int attribute) {
+
+    }
+
+    public void withdraw(String id, LocalDate withdrawT) {
+
+    }
+
     public void enter(String id, LocalDateTime entryT, int attribute) {
 
     }
@@ -92,19 +102,12 @@ public class ParkingManager {
 
     }
 
-    public void assign(String id, String contact, LocalDate assignT, int attribute) {
-    }
-
-    public void withdraw(String id, LocalDate withdrawT) {
-
-    }
-
     public void show() {
+
     }
 
     public void incomeOf(int y, int m) {
         YearMonth yearMonth = YearMonth.of(y, m);
         System.out.println(monthlyIncome.get(yearMonth));
     }
-
 }

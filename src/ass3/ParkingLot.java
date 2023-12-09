@@ -1,24 +1,30 @@
 package ass3;
 
-import java.util.ArrayList;
-
 public class ParkingLot {
-    private ArrayList<ParkingSpot> parkingLot;
+    private ParkingSpot[] parkingLot;
 
     public ParkingLot(int numberOfSpots) {
-        parkingLot = new ArrayList<>(numberOfSpots);
+        parkingLot = new ParkingSpot[numberOfSpots];
     }
 
     public boolean isAssigned(int i) {
-        return parkingLot.get(i).isAssigned();
+        return parkingLot[i].isAssigned();
     }
 
     public boolean isOccupied(int i) {
-        return parkingLot.get(i).isOccupied();
+        return parkingLot[i].isOccupied();
     }
 
-    public ParkingSpot getMinParkableSpot(){
-        for(ParkingSpot s : parkingLot) if (!s.isOccupied()) return s;
+    public ParkingSpot getMaxAssignable() {
+        for (int i = parkingLot.length - 1; i >= 0; i--) {
+            ParkingSpot s = parkingLot[i];
+            if(!s.isAssigned()) return s;
+        }
+        return null;
+    }
+
+    public ParkingSpot getMinParkable() {
+        for (ParkingSpot s : parkingLot) if (!s.isOccupied()) return s;
         return null;
     }
 }
