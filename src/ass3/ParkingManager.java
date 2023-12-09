@@ -10,7 +10,7 @@ public class ParkingManager {
 
     public ParkingManager(int NofSpots, int monthlyFee, int feePer10) {
         this.parkingLot = new ParkingLot(NofSpots);
-        Vehicle.setFee(feePer10, monthlyFee);
+        Calculator calc = new Calculator(monthlyFee, feePer10);
     }
 
     public void enter(String id, int y, int m, int d, int h, int min, int attribute) {
