@@ -3,7 +3,7 @@ package ass3;
 import java.util.ArrayList;
 
 public class ParkingLot {
-    private ArrayList<ParkingSpot> parkingLot = new ArrayList<>();
+    private ArrayList<ParkingSpot> parkingLot;
 
     public ParkingLot(int numberOfSpots) {
         parkingLot = new ArrayList<>(numberOfSpots);

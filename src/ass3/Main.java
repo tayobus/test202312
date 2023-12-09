@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.Scanner;
 
 public class Main {
-    
+
     public static void main(String[] arg){
         int NofSpots, dailyFee, feePer10;
         Scanner in = new Scanner(System.in);
@@ -21,5 +21,6 @@ public class Main {
         rmap.readTxt(res);
 
         ParkingManager manager = new ParkingManager(NofSpots, dailyFee, feePer10);
+        manager.run();
     }
 }
