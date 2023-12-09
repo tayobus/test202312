@@ -1,7 +1,7 @@
 package ass3;
 
 public class ParkingLot {
-    private ParkingSpot[] parkingLot;
+    private final ParkingSpot[] parkingLot;
 
     public ParkingLot(int numberOfSpots) {
         parkingLot = new ParkingSpot[numberOfSpots];
@@ -18,7 +18,7 @@ public class ParkingLot {
     public ParkingSpot getMaxAssignable() {
         for (int i = parkingLot.length - 1; i >= 0; i--) {
             ParkingSpot s = parkingLot[i];
-            if(!s.isAssigned()) return s;
+            if (!s.isAssigned()) return s;
         }
         return null;
     }

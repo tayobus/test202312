@@ -6,13 +6,11 @@ public abstract class Vehicle {
      * 0 -> e, 1~3 -> v, 4~ -> g
      */
     private final int attribute;
-    private final int spotIndex;
-    private final int spotN;
+    private final ParkingSpot spot;
 
-    public Vehicle(String id, int attribute, int spotIndex, int spotN) {
+    public Vehicle(String id, int attribute, ParkingSpot spot) {
         this.id = id;
         this.attribute = attribute;
-        this.spotIndex = spotIndex;
-        this.spotN = spotN;
+        this.spot = spot;
     }
 }

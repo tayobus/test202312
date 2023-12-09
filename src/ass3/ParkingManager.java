@@ -1,5 +1,6 @@
 package ass3;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
@@ -8,11 +9,16 @@ import java.util.Scanner;
 public class ParkingManager {
     private final MonthlyIncome monthlyIncome = new MonthlyIncome();
     private final ParkingLot parkingLot;
+    private final RMap rmap = new RMap();
+    private final NonRVMap nonRVMap = new NonRVMap();
+    private final RVMap rVMap = new RVMap();
     Scanner in = new Scanner(System.in);
 
     public ParkingManager(int NofSpots, int monthlyFee, int feePer10) {
         this.parkingLot = new ParkingLot(NofSpots);
         Calculator calc = new Calculator(monthlyFee, feePer10, parkingLot);
+        File res = new File("C:\\coding\\java\\ass3\\src\\res.txt");
+        rmap.readTxt(res);
     }
 
     public void run() {
@@ -87,6 +93,9 @@ public class ParkingManager {
     }
 
     public void assign(String id, String contact, LocalDate assignT, int attribute) {
+        Resident res = rmap.get(contact);
+        ParkingSpot spot = parkingLot.getMaxAssignable();
+        RVehicle rVehicle = new RVehicle(id, attribute, assignT, spot, res);
 
     }
 

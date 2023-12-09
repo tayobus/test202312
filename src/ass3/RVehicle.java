@@ -6,8 +6,8 @@ public class RVehicle extends Vehicle {
     private LocalDate assignT;
     private Resident owner;
 
-    public RVehicle(String id, char type, int attribute, LocalDate assignT, int spotN, Resident owner) {
-        super(id, type, attribute, spotN);
+    public RVehicle(String id, int attribute, LocalDate assignT, ParkingSpot spot, Resident owner) {
+        super(id, attribute, spot);
         this.assignT = assignT;
         this.owner = owner;
     }

@@ -1,6 +1,5 @@
 package ass3;
 
-import java.io.File;
 import java.util.Scanner;
 
 public class Main {
@@ -16,9 +15,7 @@ public class Main {
         System.out.print("Enter the parking fee per 10 minutes : ");
         feePer10 = in.nextInt();
 
-        RMap rmap = new RMap();
-        File res = new File("C:\\coding\\java\\ass3\\src\\res.txt");
-        rmap.readTxt(res);
+
 
         ParkingManager manager = new ParkingManager(NofSpots, dailyFee, feePer10);
         manager.run();
