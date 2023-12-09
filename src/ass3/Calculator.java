@@ -7,10 +7,12 @@ import java.time.temporal.ChronoUnit;
 public class Calculator {
     private final int fee;
     private final int Rfee;
+    private ParkingLot parkingLot;
 
-    public Calculator(int Rfee, int fee) {
+    public Calculator(int Rfee, int fee, ParkingLot parkingLot) {
         this.Rfee = (int) Math.ceil((double) Rfee / 30);
         this.fee = fee;
+        this.parkingLot = parkingLot;
     }
 
     public int calculate(LocalDateTime entryT, LocalDateTime out, int attribute) {
@@ -18,7 +20,7 @@ public class Calculator {
         int i = (int) Math.ceil((double) minutesDifference / 10);
         i = i == 1 ? 0 : fee * i;
         i = calcByT(i, attribute);
-        if (ParkingLot.isAssigned(i)) i /= 2;
+        if (parkingLot.isAssigned(i)) i /= 2;
         return i;
     }
 

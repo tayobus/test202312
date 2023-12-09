@@ -8,7 +8,7 @@ public abstract class Vehicle {
     private final int attribute;
     private final int spotIndex;
 
-    public Vehicle(String id, char type, int attribute, int spotIndex) {
+    public Vehicle(String id, int attribute, int spotIndex) {
         this.id = id;
         this.attribute = attribute;
         this.spotIndex = spotIndex;

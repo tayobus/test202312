@@ -3,13 +3,13 @@ package ass3;
 import java.util.ArrayList;
 
 public class ParkingLot {
-    private static ArrayList<ParkingSpot> parkingLot = new ArrayList<>();
+    private ArrayList<ParkingSpot> parkingLot = new ArrayList<>();
 
     public ParkingLot(int numberOfSpots) {
         parkingLot = new ArrayList<>(numberOfSpots);
     }
 
-    public static boolean isAssigned(int i) {
+    public boolean isAssigned(int i) {
         return parkingLot.get(i).isAssigned();
     }
 
