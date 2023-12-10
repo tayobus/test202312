@@ -11,4 +11,12 @@ public class RVehicle extends Vehicle {
         this.assignT = assignT;
         this.owner = owner;
     }
+
+    public LocalDate getAssignT() {
+        return assignT;
+    }
+
+    public Resident getOwner() {
+        return owner;
+    }
 }

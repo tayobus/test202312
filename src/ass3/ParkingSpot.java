@@ -5,13 +5,11 @@ public class ParkingSpot {
     private boolean occupied = false;
     private boolean assigned = false;
 
-    public void enter(String Vid) {
-        this.Vid = Vid;
+    public void enter() {
         occupied = true;
     }
 
-    public void assign(String Vid) {
-        this.Vid = Vid;
+    public void assign() {
         assigned = true;
     }
 

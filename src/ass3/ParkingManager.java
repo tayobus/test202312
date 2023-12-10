@@ -4,21 +4,25 @@ import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class ParkingManager {
     private final MonthlyIncome monthlyIncome = new MonthlyIncome();
     private final ParkingLot parkingLot;
-    private final RMap rmap = new RMap();
-    private final NonRVMap nonRVMap = new NonRVMap();
-    private final RVMap rVMap = new RVMap();
+    private final RMap rMap = new RMap();
     Scanner in = new Scanner(System.in);
+    Calculator calc;
+
+    HashMap<String, RVehicle> rvMap = new HashMap<>();
+    HashMap<String, NonRVehicle> nonrvMap = new HashMap<>();
+    HashMap<String, Vehicle> parkedVMap = new HashMap<>();
 
     public ParkingManager(int NofSpots, int monthlyFee, int feePer10) {
         this.parkingLot = new ParkingLot(NofSpots);
         Calculator calc = new Calculator(monthlyFee, feePer10, parkingLot);
         File res = new File("C:\\coding\\java\\ass3\\src\\res.txt");
-        rmap.readTxt(res);
+        rMap.readTxt(res);
     }
 
     public void run() {
@@ -93,22 +97,39 @@ public class ParkingManager {
     }
 
     public void assign(String id, String contact, LocalDate assignT, int attribute) {
-        Resident res = rmap.get(contact);
+        Resident res = rMap.get(contact);
         ParkingSpot spot = parkingLot.getMaxAssignable();
+        spot.assign();
         RVehicle rVehicle = new RVehicle(id, attribute, assignT, spot, res);
-
+        rvMap.put(id, rVehicle);
     }
 
     public void withdraw(String id, LocalDate withdrawT) {
-
+        rvMap.get(id).getSpot().withdraw();
+        RVehicle v = rvMap.remove(id);
+        int earned = calc.calculate(v.getAssignT(), withdrawT, v.getAttribute());
+        monthlyIncome.earn(YearMonth.from(withdrawT), earned);
     }
 
     public void enter(String id, LocalDateTime entryT, int attribute) {
-
+        if (rvMap.containsKey(id)) {
+            parkedVMap.put(id, rvMap.get(id));
+            rvMap.get(id).getSpot().enter();
+        } else {
+            ParkingSpot spot = parkingLot.getMinParkable();
+            NonRVehicle v = new NonRVehicle(id, attribute, entryT, spot);
+            nonrvMap.put(id, v);
+            spot.enter();
+        }
     }
 
     public void exit(String id, LocalDateTime exitT) {
-
+        Vehicle v = parkedVMap.remove(id);
+        v.getSpot().exit();
+        if (v instanceof NonRVehicle nv) {
+            int earned = calc.calculate(nv.getEntryT(), exitT, nv.getAttribute());
+            monthlyIncome.earn(YearMonth.from(exitT), earned);
+        }
     }
 
     public void show() {

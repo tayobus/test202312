@@ -13,4 +13,12 @@ public abstract class Vehicle {
         this.attribute = attribute;
         this.spot = spot;
     }
+
+    public int getAttribute() {
+        return attribute;
+    }
+
+    public ParkingSpot getSpot() {
+        return spot;
+    }
 }
