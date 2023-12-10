@@ -6,6 +6,21 @@ public class ParkingLot {
     public ParkingLot(int numberOfSpots) {
         parkingLot = new ParkingSpot[numberOfSpots];
     }
+    public ParkingSpot getSpot(int i) {
+        return parkingLot[i];
+    }
+    public void assign(int i) {
+        parkingLot[i].assign();
+    }
+    public void withdraw(int i) {
+        parkingLot[i].withdraw();
+    }
+    public void enter(int i) {
+        parkingLot[i].enter();
+    }
+    public void exit(int i) {
+        parkingLot[i].exit();
+    }
 
     public boolean isAssigned(int i) {
         return parkingLot[i].isAssigned();
@@ -15,16 +30,17 @@ public class ParkingLot {
         return parkingLot[i].isOccupied();
     }
 
-    public ParkingSpot getMaxAssignable() {
+    public int getMaxAssignable() {
         for (int i = parkingLot.length - 1; i >= 0; i--) {
-            ParkingSpot s = parkingLot[i];
-            if (!s.isAssigned()) return s;
+            if (!parkingLot[i].isAssigned()) return i;
         }
-        return null;
+        return -1;
     }
 
-    public ParkingSpot getMinParkable() {
-        for (ParkingSpot s : parkingLot) if (!s.isOccupied()) return s;
-        return null;
+    public int getMinParkable() {
+        for (int i = 0; i < parkingLot.length; i++) {
+            if (!parkingLot[i].isOccupied()) return i;
+        }
+        return -1;
     }
 }

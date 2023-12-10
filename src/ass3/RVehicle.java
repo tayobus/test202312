@@ -6,8 +6,8 @@ public class RVehicle extends Vehicle {
     private LocalDate assignT;
     private Resident owner;
 
-    public RVehicle(String id, int attribute, LocalDate assignT, ParkingSpot spot, Resident owner) {
-        super(id, attribute, spot);
+    public RVehicle(String id, int attribute, LocalDate assignT, int spotNo, Resident owner) {
+        super(id, attribute, spotNo);
         this.assignT = assignT;
         this.owner = owner;
     }
@@ -18,5 +18,17 @@ public class RVehicle extends Vehicle {
 
     public Resident getOwner() {
         return owner;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%d %s %s %s %s %s %s ",
+                getSpotNo(),
+                getId(),
+                owner.getContact(),
+                owner.getName(),
+                assignT.getYear(),
+                assignT.getMonthValue(),
+                assignT.getDayOfMonth()) + attribute2str();
     }
 }

@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.TreeMap;
 
 public class ParkingManager {
     private final MonthlyIncome monthlyIncome = new MonthlyIncome();
@@ -98,46 +99,60 @@ public class ParkingManager {
 
     public void assign(String id, String contact, LocalDate assignT, int attribute) {
         Resident res = rMap.get(contact);
-        ParkingSpot spot = parkingLot.getMaxAssignable();
-        spot.assign();
-        RVehicle rVehicle = new RVehicle(id, attribute, assignT, spot, res);
+        int spotNo = parkingLot.getMaxAssignable();
+        parkingLot.assign(spotNo);
+        RVehicle rVehicle = new RVehicle(id, attribute, assignT, spotNo, res);
         rvMap.put(id, rVehicle);
     }
 
     public void withdraw(String id, LocalDate withdrawT) {
-        rvMap.get(id).getSpot().withdraw();
+        parkingLot.getSpot(rvMap.get(id).getSpotNo()).withdraw();
         RVehicle v = rvMap.remove(id);
         int earned = calc.calculate(v.getAssignT(), withdrawT, v.getAttribute());
-        monthlyIncome.earn(YearMonth.from(withdrawT), earned);
+        monthlyIncome.rEarn(YearMonth.from(withdrawT), earned);
     }
 
     public void enter(String id, LocalDateTime entryT, int attribute) {
         if (rvMap.containsKey(id)) {
             parkedVMap.put(id, rvMap.get(id));
-            rvMap.get(id).getSpot().enter();
+            parkingLot.getSpot(rvMap.get(id).getSpotNo()).enter();
         } else {
-            ParkingSpot spot = parkingLot.getMinParkable();
-            NonRVehicle v = new NonRVehicle(id, attribute, entryT, spot);
+            int spotNo = parkingLot.getMinParkable();
+            NonRVehicle v = new NonRVehicle(id, attribute, entryT, spotNo);
             nonrvMap.put(id, v);
-            spot.enter();
+            parkingLot.getSpot(rvMap.get(id).getSpotNo()).enter();
         }
     }
 
     public void exit(String id, LocalDateTime exitT) {
+        parkingLot.getSpot(rvMap.get(id).getSpotNo()).exit();
         Vehicle v = parkedVMap.remove(id);
-        v.getSpot().exit();
         if (v instanceof NonRVehicle nv) {
             int earned = calc.calculate(nv.getEntryT(), exitT, nv.getAttribute());
-            monthlyIncome.earn(YearMonth.from(exitT), earned);
+            monthlyIncome.nrEarn(YearMonth.from(exitT), earned);
         }
     }
 
     public void show() {
-
+        TreeMap<String, Vehicle> r = new TreeMap<>();
+        TreeMap<String, Vehicle> nr = new TreeMap<>();
+        parkedVMap.forEach((k, v) -> {
+            if (v.getClass() == RVehicle.class) r.put(k, v);
+            else if (v.getClass() == NonRVehicle.class) nr.put(k, v);
+        });
+        System.out.println("거주자 우선주차 차량");
+        r.forEach((k, v) -> System.out.println(v));
+        System.out.println("일반 차량");
+        nr.forEach((k, v) -> System.out.println(v));
     }
 
     public void incomeOf(int y, int m) {
         YearMonth yearMonth = YearMonth.of(y, m);
-        System.out.println(monthlyIncome.get(yearMonth));
+        int r = monthlyIncome.getrIncome(yearMonth);
+        int nr = monthlyIncome.getnrIncome(yearMonth);
+        System.out.printf("총수입(%d년 %d월): %,d원%n", y, m, r + nr);
+        System.out.printf(" - 거주자 우선주차 차량: %,d원%n", r);
+        System.out.printf(" - 일반 차량: %,d원", nr);
     }
 }
+

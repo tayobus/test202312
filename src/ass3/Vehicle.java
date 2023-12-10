@@ -6,19 +6,43 @@ public abstract class Vehicle {
      * 0 -> e, 1~3 -> v, 4~ -> g
      */
     private final int attribute;
-    private final ParkingSpot spot;
+    private final int spotNo;
 
-    public Vehicle(String id, int attribute, ParkingSpot spot) {
+    public Vehicle(String id, int attribute, int spotNo) {
         this.id = id;
         this.attribute = attribute;
-        this.spot = spot;
+        this.spotNo = spotNo;
     }
 
     public int getAttribute() {
         return attribute;
     }
 
-    public ParkingSpot getSpot() {
-        return spot;
+    public int getSpotNo() {
+        return spotNo;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String attribute2str() {
+        switch (attribute) {
+            case 0 -> {
+                return "electric";
+            }
+            case 1 -> {
+                return "van 소형";
+            }
+            case 2 -> {
+                return "van 중형";
+            }
+            case 3 -> {
+                return "van 대형";
+            }
+            default -> {
+                return "gasoline " + attribute + "cc";
+            }
+        }
     }
 }

@@ -15,8 +15,6 @@ public class Main {
         System.out.print("Enter the parking fee per 10 minutes : ");
         feePer10 = in.nextInt();
 
-
-
         ParkingManager manager = new ParkingManager(NofSpots, dailyFee, feePer10);
         manager.run();
     }
