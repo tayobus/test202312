@@ -1,5 +1,3 @@
-package ass3;
-
 public abstract class Vehicle {
     private final String id;
     /**

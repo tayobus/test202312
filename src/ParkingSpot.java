@@ -1,7 +1,4 @@
-package ass3;
-
 public class ParkingSpot {
-    private String Vid;
     private boolean occupied = false;
     private boolean assigned = false;
 
@@ -14,12 +11,10 @@ public class ParkingSpot {
     }
 
     public void exit() {
-        Vid = null;
         occupied = false;
     }
 
     public void withdraw() {
-        Vid = null;
         assigned = false;
     }
 
@@ -29,9 +24,5 @@ public class ParkingSpot {
 
     public boolean isAssigned() {
         return assigned;
-    }
-
-    public String getVid() {
-        return Vid;
     }
 }

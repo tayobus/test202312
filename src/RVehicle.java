@@ -1,5 +1,3 @@
-package ass3;
-
 import java.time.LocalDate;
 
 public class RVehicle extends Vehicle {

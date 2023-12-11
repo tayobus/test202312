@@ -1,5 +1,3 @@
-package ass3;
-
 import java.time.YearMonth;
 import java.util.HashMap;
 

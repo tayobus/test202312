@@ -1,5 +1,3 @@
-package ass3;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -50,5 +48,4 @@ public class Calculator {
         }
         return calculated;
     }
-
 }

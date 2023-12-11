@@ -1,10 +1,9 @@
-package ass3;
-
 public class ParkingLot {
     private final ParkingSpot[] parkingLot;
 
     public ParkingLot(int numberOfSpots) {
         parkingLot = new ParkingSpot[numberOfSpots];
+        for(int i = 0; i < numberOfSpots; i++) parkingLot[i] = new ParkingSpot();
     }
     public ParkingSpot getSpot(int i) {
         return parkingLot[i];

@@ -1,9 +1,8 @@
-package ass3;
-
 import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.TreeMap;
@@ -65,7 +64,7 @@ public class ParkingManager {
                     int m = in.nextInt();
                     incomeOf(y, m);
                 }
-                default -> System.out.print("올바르지 않은 명령입니다.");
+                default -> System.out.println("올바르지 않은 명령입니다.");
             }
         }
     }
@@ -103,24 +102,30 @@ public class ParkingManager {
         parkingLot.assign(spotNo);
         RVehicle rVehicle = new RVehicle(id, attribute, assignT, spotNo, res);
         rvMap.put(id, rVehicle);
+        System.out.printf("%s에 주차공간(#%d번)이(가) 배정되었습니다!%n", id, spotNo + 1);
     }
 
     public void withdraw(String id, LocalDate withdrawT) {
-        parkingLot.getSpot(rvMap.get(id).getSpotNo()).withdraw();
+        int spotNo = rvMap.get(id).getSpotNo();
+        parkingLot.getSpot(spotNo).withdraw();
         RVehicle v = rvMap.remove(id);
         int earned = calc.calculate(v.getAssignT(), withdrawT, v.getAttribute());
         monthlyIncome.rEarn(YearMonth.from(withdrawT), earned);
+        System.out.printf("거주자 우선주차 차량 %s이(가) 주차공간#%d) 배정을 철회하였습니다!%n", id, spotNo + 1);
     }
 
     public void enter(String id, LocalDateTime entryT, int attribute) {
         if (rvMap.containsKey(id)) {
             parkedVMap.put(id, rvMap.get(id));
             parkingLot.getSpot(rvMap.get(id).getSpotNo()).enter();
+            System.out.printf("거주자 우선주차 차량 %s이(가) 출차하였습니다%n!", id);
         } else {
             int spotNo = parkingLot.getMinParkable();
             NonRVehicle v = new NonRVehicle(id, attribute, entryT, spotNo);
+            parkedVMap.put(id, v);
             nonrvMap.put(id, v);
-            parkingLot.getSpot(rvMap.get(id).getSpotNo()).enter();
+            parkingLot.getSpot(spotNo).enter();
+            System.out.printf("일반차량 %d이(가) 입차하였습니다!%n주차공간 %d번이 배정되었습니다!%n", id, spotNo);
         }
     }
 
@@ -130,6 +135,8 @@ public class ParkingManager {
         if (v instanceof NonRVehicle nv) {
             int earned = calc.calculate(nv.getEntryT(), exitT, nv.getAttribute());
             monthlyIncome.nrEarn(YearMonth.from(exitT), earned);
+            long minutesDifference = ChronoUnit.DAYS.between(((NonRVehicle) v).getEntryT(), exitT);
+            System.out.printf("일반차량 %s이(가) 출차하였습니다!%n주차시간: %d분%n주차요금: %d원%n", id, (int)minutesDifference, earned);
         }
     }
 
@@ -152,7 +159,7 @@ public class ParkingManager {
         int nr = monthlyIncome.getnrIncome(yearMonth);
         System.out.printf("총수입(%d년 %d월): %,d원%n", y, m, r + nr);
         System.out.printf(" - 거주자 우선주차 차량: %,d원%n", r);
-        System.out.printf(" - 일반 차량: %,d원", nr);
+        System.out.printf(" - 일반 차량: %,d원%n", nr);
     }
 }
 

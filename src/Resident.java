@@ -1,5 +1,3 @@
-package ass3;
-
 public class Resident {
     private String name, contact;
 
