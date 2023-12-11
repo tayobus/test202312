@@ -1,4 +1,5 @@
 import java.io.File;
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
@@ -20,7 +21,7 @@ public class ParkingManager {
 
     public ParkingManager(int NofSpots, int monthlyFee, int feePer10) {
         this.parkingLot = new ParkingLot(NofSpots);
-        Calculator calc = new Calculator(monthlyFee, feePer10, parkingLot);
+        this.calc = new Calculator(monthlyFee, feePer10, parkingLot);
         File res = new File("C:\\coding\\java\\ass3\\src\\res.txt");
         rMap.readTxt(res);
     }
@@ -36,8 +37,8 @@ public class ParkingManager {
             command = in.next().charAt(0);
             switch (command) {
                 case 'a' -> {
-                    contact = in.next();
                     id = in.next();
+                    contact = in.next();
                     ld = ldRead();
                     attribute = classify(in.next().charAt(0));
                     assign(id, contact, ld, attribute);
@@ -50,8 +51,10 @@ public class ParkingManager {
                 case 'e' -> {
                     id = in.next();
                     ldt = ldtRead();
-                    attribute = classify(in.next().charAt(0));
-                    enter(id, ldt, attribute);
+                    if (!rvMap.containsKey(id)) {
+                        attribute = classify(in.next().charAt(0));
+                        enter(id, ldt, attribute);
+                    } else enter(id, ldt, 0);
                 }
                 case 'x' -> {
                     id = in.next();
@@ -64,25 +67,40 @@ public class ParkingManager {
                     int m = in.nextInt();
                     incomeOf(y, m);
                 }
-                default -> System.out.println("올바르지 않은 명령입니다.");
+                default -> {
+                    System.out.println("올바르지 않은 명령입니다.");
+                    in.nextLine();
+                }
             }
         }
     }
 
     public LocalDate ldRead() {
-        int year = in.nextInt();
-        int month = in.nextInt();
-        int day = in.nextInt();
-        return LocalDate.of(year, month, day);
+        try {
+            int year = in.nextInt();
+            int month = in.nextInt();
+            int day = in.nextInt();
+            return LocalDate.of(year, month, day);
+        } catch (Exception e) {
+            System.out.println("날짜 입력 형식이 잘못되었습니다. 다시 입력해주십시오.");
+            in.nextLine();
+            return ldRead();
+        }
     }
 
     public LocalDateTime ldtRead() {
-        int year = in.nextInt();
-        int month = in.nextInt();
-        int day = in.nextInt();
-        int hour = in.nextInt();
-        int minute = in.nextInt();
-        return LocalDateTime.of(year, month, day, hour, minute);
+        try {
+            int year = in.nextInt();
+            int month = in.nextInt();
+            int day = in.nextInt();
+            int hour = in.nextInt();
+            int minute = in.nextInt();
+            return LocalDateTime.of(year, month, day, hour, minute);
+        } catch (Exception e) {
+            System.out.println("날짜 및 시간 입력 형식이 잘못되었습니다. 다시 입력해주십시오.");
+            in.nextLine();
+            return ldtRead();
+        }
     }
 
     public int classify(char type) {
@@ -118,25 +136,25 @@ public class ParkingManager {
         if (rvMap.containsKey(id)) {
             parkedVMap.put(id, rvMap.get(id));
             parkingLot.getSpot(rvMap.get(id).getSpotNo()).enter();
-            System.out.printf("거주자 우선주차 차량 %s이(가) 출차하였습니다%n!", id);
+            System.out.printf("거주자 우선주차 차량 %s이(가) 입차하였습니다!%n", id);
         } else {
             int spotNo = parkingLot.getMinParkable();
             NonRVehicle v = new NonRVehicle(id, attribute, entryT, spotNo);
             parkedVMap.put(id, v);
             nonrvMap.put(id, v);
             parkingLot.getSpot(spotNo).enter();
-            System.out.printf("일반차량 %d이(가) 입차하였습니다!%n주차공간 %d번이 배정되었습니다!%n", id, spotNo);
+            System.out.printf("일반차량 %s이(가) 입차하였습니다!%n주차공간 %d번이 배정되었습니다!%n", id, spotNo + 1);
         }
     }
 
     public void exit(String id, LocalDateTime exitT) {
-        parkingLot.getSpot(rvMap.get(id).getSpotNo()).exit();
+        parkingLot.getSpot(parkedVMap.get(id).getSpotNo()).exit();
         Vehicle v = parkedVMap.remove(id);
         if (v instanceof NonRVehicle nv) {
             int earned = calc.calculate(nv.getEntryT(), exitT, nv.getAttribute());
             monthlyIncome.nrEarn(YearMonth.from(exitT), earned);
             long minutesDifference = ChronoUnit.DAYS.between(((NonRVehicle) v).getEntryT(), exitT);
-            System.out.printf("일반차량 %s이(가) 출차하였습니다!%n주차시간: %d분%n주차요금: %d원%n", id, (int)minutesDifference, earned);
+            System.out.printf("일반차량 %s이(가) 출차하였습니다!%n주차시간: %d분%n주차요금: %d원%n", id, (int) minutesDifference, earned);
         }
     }
 
@@ -154,12 +172,22 @@ public class ParkingManager {
     }
 
     public void incomeOf(int y, int m) {
-        YearMonth yearMonth = YearMonth.of(y, m);
-        int r = monthlyIncome.getrIncome(yearMonth);
-        int nr = monthlyIncome.getnrIncome(yearMonth);
-        System.out.printf("총수입(%d년 %d월): %,d원%n", y, m, r + nr);
-        System.out.printf(" - 거주자 우선주차 차량: %,d원%n", r);
-        System.out.printf(" - 일반 차량: %,d원%n", nr);
+        YearMonth yearMonth;
+        try {
+            yearMonth = YearMonth.of(y, m);
+            int r = 0;
+            int nr = 0;
+            try {
+                r = monthlyIncome.getrIncome(yearMonth);
+                nr = monthlyIncome.getnrIncome(yearMonth);
+            } catch (NullPointerException ignored) {
+            }
+            System.out.printf("총수입(%d년 %d월): %,d원%n", y, m, r + nr);
+            System.out.printf(" - 거주자 우선주차 차량: %,d원%n", r);
+            System.out.printf(" - 일반 차량: %,d원%n", nr);
+        } catch (DateTimeException e) {
+            System.out.println("유효하지 않은 연도 또는 월입니다. 다시 입력하세요.");
+        }
     }
 }
 

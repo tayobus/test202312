@@ -18,7 +18,6 @@ public class Calculator {
         int i = (int) Math.ceil((double) minutesDifference / 10);
         i = i == 1 ? 0 : fee * i;
         i = calcByT(i, attribute);
-        if (parkingLot.isAssigned(i)) i /= 2;
         return i;
     }
 

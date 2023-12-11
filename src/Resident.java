@@ -1,5 +1,5 @@
 public class Resident {
-    private String name, contact;
+    private final String name, contact;
 
     public Resident(String contact, String name) {
         this.contact = contact;
@@ -10,15 +10,7 @@ public class Resident {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getContact() {
         return contact;
-    }
-
-    public void setContact(String conact) {
-        this.contact = contact;
     }
 }
