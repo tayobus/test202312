@@ -8,7 +8,7 @@ public class Calculator {
     private ParkingLot parkingLot;
 
     public Calculator(int Rfee, int fee, ParkingLot parkingLot) {
-        this.Rfee = (int) Math.ceil((double) Rfee / 30);
+        this.Rfee = Rfee;
         this.fee = fee;
         this.parkingLot = parkingLot;
     }

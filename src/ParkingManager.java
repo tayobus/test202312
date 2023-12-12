@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.TreeMap;
 
@@ -129,7 +130,7 @@ public class ParkingManager {
         RVehicle v = rvMap.remove(id);
         int earned = calc.calculate(v.getAssignT(), withdrawT, v.getAttribute());
         monthlyIncome.rEarn(YearMonth.from(withdrawT), earned);
-        System.out.printf("거주자 우선주차 차량 %s이(가) 주차공간#%d) 배정을 철회하였습니다!%n", id, spotNo + 1);
+        System.out.printf("거주자 우선주차 차량 %s이(가) (주차공간#%d) 배정을 철회하였습니다!%n", id, spotNo + 1);
     }
 
     public void enter(String id, LocalDateTime entryT, int attribute) {
@@ -153,9 +154,9 @@ public class ParkingManager {
         if (v instanceof NonRVehicle nv) {
             int earned = calc.calculate(nv.getEntryT(), exitT, nv.getAttribute());
             monthlyIncome.nrEarn(YearMonth.from(exitT), earned);
-            long minutesDifference = ChronoUnit.DAYS.between(((NonRVehicle) v).getEntryT(), exitT);
+            long minutesDifference = ChronoUnit.MINUTES.between(nv.getEntryT(), exitT);
             System.out.printf("일반차량 %s이(가) 출차하였습니다!%n주차시간: %d분%n주차요금: %d원%n", id, (int) minutesDifference, earned);
-        }
+        } else System.out.printf("거주자 우선주차 차량 %s이(가) 출차하였습니다!%n", id);
     }
 
     public void show() {
@@ -181,6 +182,11 @@ public class ParkingManager {
                 r = monthlyIncome.getrIncome(yearMonth);
                 nr = monthlyIncome.getnrIncome(yearMonth);
             } catch (NullPointerException ignored) {
+            }
+            for (Map.Entry<String, RVehicle> entry : rvMap.entrySet()) {
+                String key = entry.getKey();
+                RVehicle value = entry.getValue();
+                r += calc.calculate(value.getAssignT(), LocalDate.of(y, m, YearMonth.of(y, m).lengthOfMonth()), value.getAttribute());
             }
             System.out.printf("총수입(%d년 %d월): %,d원%n", y, m, r + nr);
             System.out.printf(" - 거주자 우선주차 차량: %,d원%n", r);
